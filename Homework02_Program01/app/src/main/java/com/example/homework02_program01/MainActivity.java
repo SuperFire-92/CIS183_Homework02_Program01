@@ -65,16 +65,21 @@ public class MainActivity extends AppCompatActivity {
         //Creates an array to store all colors
         listOfColors = new ArrayList<ColorInfo>();
 
+        //Creates the ListView as an empty ListView
         fillListView();
 
+        //Create a curColor to keep track of future changes to the color
+        curColor = new ColorInfo(sb_j_redBar.getProgress(), sb_j_greenBar.getProgress(), sb_j_blueBar.getProgress());
+
+        tv_j_hex.setText(curColor.getHex());
+
+        //Set up all buttons and sliders
         addColorButtonEventHandler();
         setListViewEventHandler();
         redBarEventHandler();
         greenBarEventHandler();
         blueBarEventHandler();
-        convertToHex();
-        tv_j_hex.setText(hexValue);
-        curColor = new ColorInfo(255, 255, 255, hexValue);
+
     }
 
     public void redBarEventHandler()
@@ -146,11 +151,18 @@ public class MainActivity extends AppCompatActivity {
     //To be run after any number has changed, updates all current information
     public void updateColors()
     {
-        convertToHex();
-        tv_j_hex.setText(hexValue);
         buildColor();
         changeBackground();
         updateTextColors();
+        tv_j_hex.setText(curColor.getHex());
+    }
+
+    //Creates the curColor based on the sliders
+    public void buildColor()
+    {
+        curColor.setRed(Integer.parseInt(tv_j_red.getText().toString()));
+        curColor.setBlue(Integer.parseInt(tv_j_blue.getText().toString()));
+        curColor.setGreen(Integer.parseInt(tv_j_green.getText().toString()));
     }
 
     //Changes the color of the background to match the currently selected color
@@ -160,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         view.setBackgroundColor(Color.parseColor("#" + curColor.getHex()));
     }
 
+    //Checks to see whether black or white should be used for onscreen text
     public void updateTextColors()
     {
         if (curColor.getRed() > 150 || curColor.getGreen() > 150 || curColor.getBlue() > 150)
@@ -172,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Sets text colors to black or white based on input
     public void setTextColor(boolean BoW)
     {
         tv_j_title.setTextColor(BoW ? Color.BLACK : Color.WHITE);
@@ -185,60 +199,7 @@ public class MainActivity extends AppCompatActivity {
         tv_j_hex.setTextColor(BoW ? Color.BLACK : Color.WHITE);
     }
 
-    //Creates the curColor based on the sliders
-    public void buildColor()
-    {
-        curColor.setRed(Integer.parseInt(tv_j_red.getText().toString()));
-        curColor.setBlue(Integer.parseInt(tv_j_blue.getText().toString()));
-        curColor.setGreen(Integer.parseInt(tv_j_green.getText().toString()));
-        curColor.setHex(hexValue);
-    }
 
-    //Converts RGB to Hex
-    public void convertToHex()
-    {
-        String curHex = "";
-        char firstS, secondS;
-        int col, first, second;
-        //Taking each color, and converting it into hex
-        col = Integer.parseInt(tv_j_red.getText().toString());
-        //Separate col into two integers
-        first = col/16;
-        second = col - (first*16);
-        //Turn both into a hex symbol
-        firstS = convert(first);
-        secondS = convert(second);
-        curHex = curHex + firstS + secondS;
-
-        //Repeat for green
-        col = Integer.parseInt(tv_j_green.getText().toString());
-        first = col/16;
-        second = col - (first*16);
-        firstS = convert(first);
-        secondS = convert(second);
-        curHex = curHex + firstS + secondS;
-
-        //repeat for blue
-        col = Integer.parseInt(tv_j_blue.getText().toString());
-        first = col/16;
-        second = col - (first*16);
-        firstS = convert(first);
-        secondS = convert(second);
-        curHex = curHex + firstS + secondS;
-
-        hexValue = curHex;
-    }
-
-    //Converts numbers 10-15 to A-F
-    public char convert(int n)
-    {
-        if (n >= 10)
-        {
-            return (char) ('A' + n - 10);
-        }
-
-        return (char)(n+'0');
-    }
 
     //Button Listener for adding new colors
     public void addColorButtonEventHandler()
@@ -254,15 +215,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Adds a color to the list, creates a new color in curColor, and resets all sliders
     public void addColor()
     {
         listOfColors.add(curColor);
 
-        curColor = new ColorInfo(255,255,255,"FFFFFF");
+        curColor = new ColorInfo(255,255,255);
 
         setSliders(255,255,255);
     }
 
+    //Sets sliders to the given values and alerts updateColors()
     public void setSliders(int r, int g, int b)
     {
         sb_j_redBar.setProgress(r);
@@ -279,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         lv_j_colorList.setAdapter(adapter);
     }
 
+    //Handles the user clicking cells on the ListView
     public void setListViewEventHandler()
     {
         lv_j_colorList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

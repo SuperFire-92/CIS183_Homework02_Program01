@@ -7,12 +7,12 @@ public class ColorInfo
     private int blue;
     private String hex;
 
-    public ColorInfo(int r, int g, int b, String h)
+    public ColorInfo(int r, int g, int b)
     {
         red = r;
         green = g;
         blue = b;
-        hex = h;
+        setHex();
     }
     public int getRed() {
         return red;
@@ -20,6 +20,7 @@ public class ColorInfo
 
     public void setRed(int r) {
         this.red = r;
+        setHex();
     }
 
     public int getGreen() {
@@ -28,6 +29,7 @@ public class ColorInfo
 
     public void setGreen(int g) {
         this.green = g;
+        setHex();
     }
 
     public int getBlue() {
@@ -36,16 +38,61 @@ public class ColorInfo
 
     public void setBlue(int b) {
         this.blue = b;
+        setHex();
     }
 
     public String getHex() {
         return hex;
     }
 
-    public void setHex(String h) {
-        this.hex = h;
+    //Hex is updated automatically rather than being update outside of this class
+    private void setHex()
+    {
+        //Instead of letting the user set the hex, it sets automatically based on the rgb values
+        String curHex = "";
+        char firstS, secondS;
+        int first, second;
+
+        //Separate the color into two integers
+        first = red/16;
+        second = red - (first*16);
+        //Turn both into a hex symbol
+        firstS = convert(first);
+        secondS = convert(second);
+        //Put it into the curHex string
+        curHex = curHex + firstS + secondS;
+
+        //Separate the color into two integers
+        first = green/16;
+        second = green - (first*16);
+        //Turn both into a hex symbol
+        firstS = convert(first);
+        secondS = convert(second);
+        //Put it into the curHex string
+        curHex = curHex + firstS + secondS;
+
+        //Separate the color into two integers
+        first = blue/16;
+        second = blue - (first*16);
+        //Turn both into a hex symbol
+        firstS = convert(first);
+        secondS = convert(second);
+        //Put it into the curHex string
+        curHex = curHex + firstS + secondS;
+
+        //Set hex to be the newly created curHex string
+        hex = curHex;
     }
 
+    //Converts numbers into their proper hex form
+    private char convert(int n)
+    {
+        if (n >= 10)
+        {
+            return (char) ('A' + n - 10);
+        }
 
+        return (char)(n+'0');
+    }
 
 }
