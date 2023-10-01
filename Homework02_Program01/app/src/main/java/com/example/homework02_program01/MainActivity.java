@@ -1,3 +1,10 @@
+//=============================
+//Name: Nicolaas Dyk
+//Date: 09/21/23
+//Desc: RGB Sliders using
+//      seekbars and listviews
+//=============================
+
 package com.example.homework02_program01;
 
 import androidx.appcompat.app.AppCompatActivity;
